@@ -81,6 +81,21 @@ def dist(f1,f2):
 		sqe = sqe + (v - f2[k])**2
 	return sqe/len(f1)
 	
+def get_keylen(cipher, minlen, maxlen):
+	sum = 0
+	keylen_distr = []
+	for m in range(minlen,maxlen+1):
+		keylen_distr.append((m, kappa_o(cipher, m)))
+	keylen_distr.sort(lambda x,y: cmp(x[1],y[1]))
+	#pprint(keylen_distr)
+	return keylen_distr[-1][0]
+	
+def get_keylens(ciphers, minlen, maxlen):
+	lengths = []
+	for cipher in ciphers:
+		lengths.append(get_keylen(cipher,minlen,maxlen))
+	return lengths
+
 def get_key(cipher, keylen):
 	key = ""
 	for j in range(keylen):
@@ -102,70 +117,106 @@ def main():
 	prog = os.path.basename(__file__)
 	examples = "examples:\n"
 	examples+= "  " + prog + " -k mysecret plain.txt\n"
-	examples+= "  " + prog + " -m decrypt -k mysecret cipher.txt"
+	examples+= "  " + prog + " -m decrypt -k mysecret cipher.txt\n"
+	examples+= "  " + prog + " -m break cipher.txt\n"
+	examples+= "  " + prog + " -m break -min-len 16 -max-len 50 cipher1.txt cipher2.txt"
 
 	# setup command line arguments
 	parser = argparse.ArgumentParser(
 		description='Encryption and decryption using the Vigenère cipher, adapted for the Swedish alphabet.',
 		formatter_class=argparse.RawDescriptionHelpFormatter,
 		epilog=examples)
-	parser.add_argument('-k', help="the secret key to use", dest="key")
 	parser.add_argument('-m', default='encrypt', choices=['encrypt','decrypt','break'], help="use encryption (default), decryption, or attempt to break an encrypted text", dest="mode")
-	parser.add_argument('infile', type=file, help="the file containing the plaintext (for encryption) or ciphertext (for decryption)")
+	parser.add_argument('-k', help="the secret key to use (not used while breaking)", dest="key")
+	parser.add_argument('-min-len', help="the minimum length of the key (used while breaking)", dest="min_keylen", default=1, type=int)
+	parser.add_argument('-max-len', help="the maximum length of the key (used while breaking)", dest="max_keylen", default=16, type=int)
+	parser.add_argument('infile', type=file, help="the file containing the plaintext (for encryption) or ciphertext (for decryption)", nargs='+')
 	args = parser.parse_args()
-
-	# read file
-	intxt = args.infile.read()
-	args.infile.close()
-
-	# convert to lower case
-	intxt = intxt.decode('utf-8').lower()
-
-	# remove all non-alphanum characters
-	r = re.compile(ur"[\W_]+", re.UNICODE)
-	intxt = r.sub("", intxt)
 	
 	if args.mode == 'break':
+
+		if args.min_keylen > args.max_keylen - 2:
+			print "minimum key length must be at least two less than maximum key length."
+			exit(0)
+			
+		intxts = []
 		
-		#key = crack(intxt)
-		#plain = decrypt(intxt, key)
-		#print plain.upper()
-		letter_frequency
+		# read files
+		for infile in args.infile:
+			intxt = infile.read()
+			infile.close()
+			
+			# convert to lower case
+			intxt = intxt.decode('utf-8').lower()
+
+			# remove all non-alphanum characters
+			r = re.compile(ur"[\W_]+", re.UNICODE)
+			intxt = r.sub("", intxt)
+			
+			intxts.append(intxt)
+			
 		sum = 0
 		keylen_distr = []
-		for m in range(1,16+1):
-			keylen_distr.append((m, kappa_o(intxt, m)))
+		for keylen in range(args.min_keylen, args.max_keylen+1):
+			txt = ""
+			for intxt in intxts:
+				txt += intxt + (keylen - (len(intxt) % keylen)) * 'a'
+			keylen_distr.append((keylen, kappa_o(txt, keylen)))
+			
 		
 		keylen_distr.sort(lambda x,y: cmp(x[1],y[1]))
 		#pprint(keylen_distr)
 		keylen = keylen_distr[-1][0]
 		print "keylen:",keylen
-		key = get_key(intxt,keylen)
+		
+		txt = ""
+		for intxt in intxts:
+			txt += intxt + (keylen - (len(intxt) % keylen)) * 'a'
+		key = get_key(txt,keylen)
 		print "key:", key
-		print "plaintext:", decrypt(intxt,key)
+		for intxt in intxts:
+			print "\n", decrypt(intxt,key)
 		
 	else:
-		# the encryption key
-		if args.key is None:
-			print "you need to specify a key"
-			exit()
-		key = args.key.decode('utf-8').lower()
-	
-		mode = 1 if args.mode == 'encrypt' else -1
-	
-		outtxt = crypt(intxt, key, mode).upper()
-		print outtxt
-	
-		#pre = "vig_group2."
-		#f = open(pre+"crypto", "w")
-		#f.write(outtxt.encode('utf-8'))
-		#f.close()
-		#f = open(pre+"plain", "w")
-		#f.write(intxt.encode('utf-8'))
-		#f.close()
-		#f = open(pre+"key", "w")
-		#f.write(key.encode('utf-8'))
-		#f.close()
+
+		# read file
+		for infile in args.infile:
+			intxt = infile.read()
+			infile.close()
+			
+			# convert to lower case
+			intxt = intxt.decode('utf-8').lower()
+
+			# remove all non-alphanum characters
+			r = re.compile(ur"[\W_]+", re.UNICODE)
+			intxt = r.sub("", intxt)
+			
+			# the encryption key
+			if args.key is None:
+				print "you need to specify a key"
+				exit()
+			key = args.key.decode('utf-8').lower()
+		
+			mode = 1 if args.mode == 'encrypt' else -1
+		
+			outtxt = crypt(intxt, key, mode).upper()
+			outtxt = outtxt.lower() if mode == -1 else outtxt.upper()
+			
+			if len(args.infile) > 1:
+				print "\n" + infile.name + ":"
+			
+			print outtxt
+		
+			#pre = "vig_group2."
+			#f = open(pre+"crypto", "w")
+			#f.write(outtxt.encode('utf-8'))
+			#f.close()
+			#f = open(pre+"plain", "w")
+			#f.write(intxt.encode('utf-8'))
+			#f.close()
+			#f = open(pre+"key", "w")
+			#f.write(key.encode('utf-8'))
+			#f.close()
 		
 
 	
