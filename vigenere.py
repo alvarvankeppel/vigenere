@@ -4,63 +4,56 @@ import argparse
 import string
 import re
 import os
+import sys
+import codecs
 from pprint import pprint
 
+# the lower case alphabet, used to map between index and char
 alphabet = (string.lowercase + "åäö").decode('utf-8')
+
+# the normal letter frequency for swedish texts
 letter_frequency = {
-	'A':9.38, 'B':1.54, 'C':1.49, 'D':4.70, 'E':10.15, 'F':2.03,
-	'G':2.86, 'H':2.09, 'I':5.82, 'J':0.61, 'K':3.14,  'L':5.28,
-	'M':3.47, 'N':8.54, 'O':4.48, 'P':1.84, 'Q':0.02,  'R':8.43,
-	'S':6.59, 'T':7.69, 'U':1.92, 'V':2.42, 'W':0.14,  'X':0.16,
-	'Y':0.71, 'Z':0.07, 'å':1.34, 'ä':1.80, 'ö':1.31
+	u'A':0.0938, u'B':0.0154, u'C':0.0149, u'D':0.0470, u'E':0.01015,
+	u'F':0.0203, u'G':0.0286, u'H':0.0209, u'I':0.0582, u'J':0.0061,
+	u'K':0.0314, u'L':0.0528, u'M':0.0347, u'N':0.0854, u'O':0.0448,
+	u'P':0.0184, u'Q':0.0002, u'R':0.0843, u'S':0.0659, u'T':0.0769,
+	u'U':0.0192, u'V':0.0242, u'W':0.0014, u'X':0.0016, u'Y':0.0071,
+	u'Z':0.0007, u'å':0.0134, u'ä':0.0180, u'ö':0.0131
 }
 
-common_words = [[], [],
-	['en', 'av', 'är', 'på', 'de', 'om', 'år'],
-	['och', 'som', 'att', 'den', 'med', 'för', 'det', 'ett', 'han', 'var', 'har', 'vid', 'men', 'sig', 'man'],
-	['till', 'från', 'även', 'inte'],
-	['under', 'eller', 'efter']
-]
+# output handle for printing proper utf-8
+out = codecs.getwriter('utf-8')(sys.stdout)
 
-# change from percents to fractions
-tmp = {}
-for k in letter_frequency:
-	tmp[k.lower().decode('utf-8')] = letter_frequency[k]/100
-letter_frequency = tmp
-del tmp
-
+# returns a dictionary with occurences of each character in the text s
 def freq(s):
 	d = {}
 	for c in s:
 		d[c] = d.get(c,0) + 1
 	return d
 
+# convert an index to a character
 def ns(n):
 	return alphabet[n%len(alphabet)]
+	
+# converts a character to an index
 def sn(s):
 	return alphabet.find(s)
 
+# encrypts the text plain by shifting each character using the
+# corresponding character index in the key multiplied by crypt
+#
+# in effect: crypt=1 => encryption, crypt=-1 => decryption
 def crypt(plain, key, crypt=1):
 	L = []
 	for c,i in zip(plain,range(len(plain))):
 		L.append(ns(sn(c) + crypt*sn(key[i%len(key)])))
 	return ''.join(L)
 	
-def decrypt(plain, key):
-	return crypt(plain, key, -1)
+# decrypt the text cipher using the key key.
+def decrypt(cipher, key):
+	return crypt(cipher, key, -1)
 	
-def partial_decrypt(plain, key):
-	return crypt(plain, key.replace(' ', 'a'), -1)
-	
-def partial_decrypt(plain, key, keylen):
-	return crypt(plain, key + 'a' * (keylen-len(key)))
-	
-def crack(cipher):
-	# guess key length
-	# find each key char by freq analysis
-	key = "CTHULHURLYEHWGAH".lower()
-	return key
-	
+# calculate kappa_o for a key of length m using the cipher text cipher
 def kappa_o(cipher, m):
 	IC = 0.
 	for j in range(m):
@@ -75,27 +68,34 @@ def kappa_o(cipher, m):
 	IC = IC / m
 	return IC
 
+# return the mean squared error between two frequency distributions
 def dist(f1,f2):
 	sqe = 0.
 	for k,v in f1.items():
 		sqe = sqe + (v - f2[k])**2
 	return sqe/len(f1)
 	
+# guess the key length for the encrypted text cipher by minimizing the
+# distance of the frequency distribution
 def get_keylen(cipher, minlen, maxlen):
 	sum = 0
 	keylen_distr = []
 	for m in range(minlen,maxlen+1):
 		keylen_distr.append((m, kappa_o(cipher, m)))
 	keylen_distr.sort(lambda x,y: cmp(x[1],y[1]))
-	#pprint(keylen_distr)
 	return keylen_distr[-1][0]
 	
+# guess the key length for several cipher texts
 def get_keylens(ciphers, minlen, maxlen):
 	lengths = []
 	for cipher in ciphers:
 		lengths.append(get_keylen(cipher,minlen,maxlen))
 	return lengths
 
+# guess the key of length keylen for the encrypted text cipher by
+# finding the characters which creates a frequency distribution in
+# the plain text with the least distance from the standard frequency
+# distribution for the target language.
 def get_key(cipher, keylen):
 	key = ""
 	for j in range(keylen):
@@ -133,6 +133,7 @@ def main():
 	parser.add_argument('infile', type=file, help="the file containing the plaintext (for encryption) or ciphertext (for decryption)", nargs='+')
 	args = parser.parse_args()
 	
+	# attempt to crack an encrypted text
 	if args.mode == 'break':
 
 		if args.min_keylen > args.max_keylen - 2:
@@ -155,6 +156,7 @@ def main():
 			
 			intxts.append(intxt)
 			
+		# calculate kappa_o or each possible key length
 		sum = 0
 		keylen_distr = []
 		for keylen in range(args.min_keylen, args.max_keylen+1):
@@ -163,20 +165,26 @@ def main():
 				txt += intxt + (keylen - (len(intxt) % keylen)) * 'a'
 			keylen_distr.append((keylen, kappa_o(txt, keylen)))
 			
-		
+		# find the key length which yields the lowest kappa_o
 		keylen_distr.sort(lambda x,y: cmp(x[1],y[1]))
-		#pprint(keylen_distr)
 		keylen = keylen_distr[-1][0]
 		print "keylen:",keylen
 		
+		# concat the cipher texts by padding them
 		txt = ""
 		for intxt in intxts:
 			txt += intxt + (keylen - (len(intxt) % keylen)) * 'a'
+			
+		# guess the key
 		key = get_key(txt,keylen)
+		
+		# print result
+		# TODO: should change to out.write so we can pipe it!
 		print "key:", key
 		for intxt in intxts:
 			print "\n", decrypt(intxt,key)
 		
+	# either decrypt or encrypt a given text using a given key
 	else:
 
 		# read file
@@ -205,27 +213,17 @@ def main():
 			if len(args.infile) > 1:
 				print "\n" + infile.name + ":"
 			
-			print outtxt
-		
-			#pre = "vig_group2."
-			#f = open(pre+"crypto", "w")
-			#f.write(outtxt.encode('utf-8'))
-			#f.close()
-			#f = open(pre+"plain", "w")
-			#f.write(intxt.encode('utf-8'))
-			#f.close()
-			#f = open(pre+"key", "w")
-			#f.write(key.encode('utf-8'))
-			#f.close()
+			out.write(outtxt)
 		
 
 	
 if __name__ == '__main__':
+	
+	# define some default kappa factors for the swedish language.
 	global kappa_r, kappa_p
 	kappa_p = 1/29.
 	kappa_r = 0
 	for f in letter_frequency.values():
 		kappa_r = kappa_r + f**2
-	
 	
 	main()
