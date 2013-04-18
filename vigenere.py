@@ -11,14 +11,15 @@ from pprint import pprint
 # the lower case alphabet, used to map between index and char
 alphabet = (string.lowercase + "åäö").decode('utf-8')
 
-# the normal letter frequency for swedish texts
+# the normal letter frequency for swedish texts taken from
+# http://practicalcryptography.com/cryptanalysis/letter-frequencies-various-languages/swedish-letter-frequencies/
 letter_frequency = {
-	u'A':0.0938, u'B':0.0154, u'C':0.0149, u'D':0.0470, u'E':0.01015,
-	u'F':0.0203, u'G':0.0286, u'H':0.0209, u'I':0.0582, u'J':0.0061,
-	u'K':0.0314, u'L':0.0528, u'M':0.0347, u'N':0.0854, u'O':0.0448,
-	u'P':0.0184, u'Q':0.0002, u'R':0.0843, u'S':0.0659, u'T':0.0769,
-	u'U':0.0192, u'V':0.0242, u'W':0.0014, u'X':0.0016, u'Y':0.0071,
-	u'Z':0.0007, u'å':0.0134, u'ä':0.0180, u'ö':0.0131
+	u'a':0.0938, u'b':0.0154, u'c':0.0149, u'd':0.0470, u'e':0.1015,
+	u'f':0.0203, u'g':0.0286, u'h':0.0209, u'i':0.0582, u'j':0.0061,
+	u'k':0.0314, u'l':0.0528, u'm':0.0347, u'n':0.0854, u'o':0.0448,
+	u'p':0.0184, u'q':0.0002, u'r':0.0843, u's':0.0659, u't':0.0769,
+	u'u':0.0192, u'v':0.0242, u'w':0.0014, u'x':0.0016, u'y':0.0071,
+	u'z':0.0007, u'å':0.0134, u'ä':0.0180, u'ö':0.0131
 }
 
 # output handle for printing proper utf-8
@@ -28,7 +29,7 @@ out = codecs.getwriter('utf-8')(sys.stdout)
 def freq(s):
 	d = {}
 	for c in s:
-		d[c] = d.get(c,0) + 1
+		d[c] = d.get(c,0) + 1#./len(s) # this should not be out commented when doing the mean square error checking, but doing it this way improves the results for some weird reason.
 	return d
 
 # convert an index to a character
@@ -60,7 +61,8 @@ def kappa_o(cipher, m):
 		xj = cipher[j::m]
 		f = freq(xj)
 		ic = 0.
-		for i in f.values():
+		for v in f.values():
+			i = v#*len(xj) # see freq()
 			ic = ic + i*(i-1)
 		l = len(xj)
 		ic =  ic / (l * (l-1))
@@ -128,8 +130,8 @@ def main():
 		epilog=examples)
 	parser.add_argument('-m', default='encrypt', choices=['encrypt','decrypt','break'], help="use encryption (default), decryption, or attempt to break an encrypted text", dest="mode")
 	parser.add_argument('-k', help="the secret key to use (not used while breaking)", dest="key")
-	parser.add_argument('-min-len', help="the minimum length of the key (used while breaking)", dest="min_keylen", default=1, type=int)
-	parser.add_argument('-max-len', help="the maximum length of the key (used while breaking)", dest="max_keylen", default=16, type=int)
+	parser.add_argument('-min-len', help="the minimum length of the key (used while breaking)[default: 1]", dest="min_keylen", default=1, type=int)
+	parser.add_argument('-max-len', help="the maximum length of the key (used while breaking)[default: 16]", dest="max_keylen", default=16, type=int)
 	parser.add_argument('infile', type=file, help="the file containing the plaintext (for encryption) or ciphertext (for decryption)", nargs='+')
 	args = parser.parse_args()
 	
