@@ -1,0 +1,146 @@
+              REPORT  LAB 1
+             CRYPTOLOGY VT13
+
+                 GROUP 2
+         Christoffer BRODD-REIJER
+             Alvar VAN KEPPEL
+
+b)
+
+The frequency table for the swedish language was taken from http://practicalcryptography.com/cryptanalysis/letter-frequencies-various-languages/swedish-letter-frequencies/ which looks like so:
+
+A :  9.38        K :  3.14        U :  1.92
+B :  1.54        L :  5.28        V :  2.42
+C :  1.49        M :  3.47        W :  0.14
+D :  4.70        N :  8.54        X :  0.16
+E : 10.15        O :  4.48        Y :  0.71
+F :  2.03        P :  1.84        Z :  0.07
+G :  2.86        Q :  0.02        Å :  1.34
+H :  2.09        R :  8.43        Ä :  1.80
+I :  5.82        S :  6.59        Ö :  1.31
+J :  0.61        T :  7.69
+
+Instructions for running the code:
+Type ./vigenere.py --help for instructions and examples
+
+Techniques we used:
+We determined the key length using the Freidman test. Given the most probably key length we continued on to guess each character of the key by choosing a character which moved the letter frequency distribution of the decrypted text closer to the letter frequency distribution of the swedish language.
+
+Breaking the ciphers took less than a second for each.
+
+These are the plain text for each of the groups (excluding our own):
+
+GROUP 1:
+key: sliderule
+plaintext: uppsalaärentätortiupplandcentralortiuppsalakommunochresidensstadföruppsalalänuppsalaärärkebiskopssätesedanelvahundrasextiofyraochstiftsstadföruppsalastiftsamtnordensäldstauniversitetsstadstadsprivilegiersomenuppstadärfrånfjotonhundranittiosjusomstapelstadfrånartonhundrataletmenortenärväsentligtäldresärskiltgamlauppsalauppsalaärsverigesfjärdestörstatätortmedhundrafyrtiotusenfyrahundrafemtiofyrainvånareenligtscbenligtuppsalakommunsegendefinitionhundrafemtiotusenniohundrafemtioettinvånaredärtätorterna
+
+GROUP 3:
+key: strindberg
+plaintext: detvarenaftonibörjanavmajdenlillaträdgårdenpåmosebackehadeännuickeblivitöppnadförallmänhetenochrabatternavoroejuppgrävdasnödropparnehadearbetatsiguppgenomfjolåretslövsamlingarochhöllojustpåattslutasinkortaverksamhetförattlämnaplatsåtdeömtåligaresaffransblommornavilkatagitskyddunderettofruktsamtpäronträdsyrenernaväntadepåsydligvindförattfågåiblommenlindarnebjödoännukärleksfilterisinaobrustnaknopparåtbofinkarnesombörjatbyggasinalavkläddabonmellanstamochgren
+
+GROUP 4:
+key: happypoliticians
+plaintext: politikerförtungaförnyastolarpolitikernainässjövägersåtungtattfullmäktigesnyinköptastolarsviktadeochfickförstärkasskriversmålandstidningendegamlastolarnahadefungeratbrasedannittonhundrasextiofyramenfleraavdenyadesignadeförnästanfyratusenkronortappadeformenredanpåförstamötetallafemtiosjuåtersändestillfabrikanteniskånesomlösteproblemetmedenförlängdskruvenligtföretagetklararstolenstatligakravochharsåltsistoraserierutanproblem
+
+GROUP 5:
+key: mfdipdäefct
+plaintext: förattinledavårtarbetevaldevienscensombästöfverensstämdemedvårtämnesartviförflyttadeossitankarnatilldessapraktfullanätterderendjupfredochettostördtlugnvororådandeomgifnaafettsådantskådespelförefölldetosssomomenobeskrifligkänslaafvemodträngdetilldjupetafvårsjälemedanvitroddeossvarafrämlingaridettamajestätiskauniversumsompåossutöfvadeenmäktigdragningskraftutanattdockförmåtillfredsställavårkunkapstörst
+
+GROUP 6:
+key: kompisar
+plaintext: västeromcentralauppsalaliggerflogstaochsernandersvägdetfinnsmångahusmedstudentkorridorerdärvarjekorridorhartolvrumallastudenterharenegenduschmenivarjekorridorfinnsdetbaraettköksåärdetocksåistudentkorridorernapåkantorsgatansomliggerinorrauppsalamendetborintesåmångastudenterivarjekorridorpåekebyvägensomliggermellanflogstaochcentrumfinnsdetstorarummedhögstandardvarjerumhartvochmöblermankanocksåbomitticentralauppsalapåhoteluppsala
+
+GROUP 7:
+key: valbourg
+plaintext: prologfredaginovemberdethadeblivitenårligenåterkommandehändelsemottagarenavblommanfylldenuåttiotvåårnärblommananläntöppnadehanpaketetochplockadebortpresentpapperetdärefterlyftehantelefonlurenochslognumrettillenföredettakriminalkommissariesomefterpensionenbosattsigvidsiljandetvåmännenvarintebarajämngamladevarföddapåsammadagvilketisammanhängerfickbetraktassomnågotavenironikommissariensomvissteattsamtaletskullekommaefterpostutdelningenvidelvatidenpåmorgonendrackkaffemedanhanväntadedettaårringdetelefonenredanhalvelvahanlyftelurenochsaheju
+
+GROUP 8:
+key: nyckelsomärlång
+plaintext: närenmänniskaskriverbrevtillenriktigtgodvänellerhelsttilldenälskadekvinnansåtarhantillhelgdagsdräktendetärjuvackertochidettystabrevetpådetvitapapperetgerhansinabästakänslortunganochdettaladeordetärosåorenadeavdagligtvardagsbrukattdeickekunnasägahögtdetvackrasompennansägertysturkapitletsinabästakänsloriennyblåbok
+
+GROUP 9:
+key: dungeons
+plaintext: drakarochdemonersversionshistorikäroklareftersomutgivarnavidfleratillfälleninteharvarittydligamedomdeavserutgåvaellerregelversionförvirringenhärrörfrämstfrånförordettillårsutgåvasomiförordetomnämnssomdentredjeupplaganavdrakarochdemonertrotsattdetvardenfjärdeutgåvanavgrundreglernafeletkommenterasavredaktionenpåsidanisinkaduspågrundavdetfelaktigaförordetharutgåvornafrånochkallatsförfjärdefemterespektivesjätteversionennärderentkronologisktvarfemtesjätteochsjundeutgåvornautgåvanfrånharkallatsversionförattpassainmellanandrautgåvanfrånochdenförmodattredjefrånmankanförvissobetraktaårsutgåvasomennytryckningavårsutgåvaeftersomtextenäridentisksånärsompånågrarättningaravmindreskrivochtryckfelåandrasidanhadeårsutgåvaettannatmedföljandeäventyrvadbeträffarvilkaversioneravreglernasomfunnitsharreglernaintealltidändratsiochmedennyutgåvadenförstautgåvanvarenöversättningochomarbetningavbasicroleplayingsursprungligareglerdessaomarbetadestillårsutgåvaochmedannytextskrevstillårsutgåvavarreglernadesammaochutgöralltsådenandraversionenavgrundreglernaårsutgåvaangeriförordetattdenärdentredjeomarbetadeupplaganavdrakarochdemonervilketärheltriktigtommanbetraktarspeletsgrundregleremellertidsåkomdrakarochdemonerexpertenexpansiontillgrundreglernautgivenförstagångenattutgöraspeletshuvudreglerdereglerförvilkanästanalltutgivetmaterialskrevsändaframtilldetfannsävenenparallellfriståenderegelversioniochmeddenårutgivnajapaninspireradedrakarochdemonersamurajvilkenskildesigfrånbådegrundochexpertreglernaibådeochårsutgåvorhadereglernaförändratsmärkbartjämförtmedföregångarnamenkomåterenexpansionvidnamnexpertsomförändradereglernadelaravexpertreglernainfogadessedaniårsutgåvaårsutgåvahadeåterförändradereglerdenversionavspeletsomkallasdrakarochdemoneräralltsådensjundeutgåvandenfemteversionenavgrundreglernaochdensjätteversionenavhuvudreglerna
+
+GROUP 10:
+key: yoloisbestyolo
+plaintext: densymmetriskakrypteringenanvändersammanyckelvidkrypteringochdekrypteringvidinformationsutbytemellansändarenochmottagarenmåstebådahatillgångtillsammanyckelförattkrypteraochdekrypterainformationenanvändsdennanyckelavbådesändarenochmottagarenfördelenmedsymmetriskkrypteringärsnabbhetennackdelenmedsymmetriskkrypteringärattflerapersonermåstehatillgångtillsammanyckelettannatproblemärhurmanskaöverföranyckelnpåettbrasättfrånsändarenatillmottagarenbdetbehövsettsäkertsättattöverföranyckelnmellansändarenaochmottagarenb
+
+TEACHER:
+key: dugamladufriadufjällhöganorddutystaduglädjerikaskönajaghälsardigvänastelanduppåjorddinsqldinhimmmldinaängdergröna
+
+TEACHER 1:
+pådemtidendånilsholgerssondroggenomlandetmedvildgässenfannsdetiuppsalaensådanpräktigungstudenthanboddepåettlitetvindsrumochvarsåsparsamattfolksadeatthanlevdepåraktingentingstudiernasköttehanmedlivochlustochblevfortarefärdigmeddemännågonannanmenhanvarintenågonplugghästellerdöddansarefördenskullutanhanförstodsigocksåpåattroasigmedsinakamraterhanvarriktigtsådansomenstudentbörvaradetvarallsintetfelpåhonomomdetinteskullevaradetatthanhadeblivitbortskämdavmedgångenmensådantkanhändadenbästelyckanärintesålättattbäraframföralltinteiungdomenenmorgonstraxsedanstudentenhadevaknatlåghanochtänktepåhurutmärkthanhadedetallamänniskortyckerommigbådekamraterochläraresadehanförsigsjälvochsåförträffligtsomdethargåttförmigmedstudiernaidagskajagoppitentamenförsistagångenochsedanärjagsnartfärdigochblirjagbarafärdigitidfårjaggenastenplatsmedstorlöndetärmärkvärdigtsådanturjagharmenjagskötermigjuocksåsåvälattdetintekangåannatänlyckligtförmigstudenternaiuppsalasittainteiklassrumochläsamångatillsammanssomskolbarnutandestuderavarförsighemmapåsinarumnärdehablivitfärdigamedettämnegådetillsinaprofessorerochbliförhördaihelaämnetpåengångettsådantförhörkallasförententamenochdetvarjustsistaochsvårastesomstudentenhadeattgåigenomdendärdagen
+
+TEACHER 2:
+attviljaslåihjäldeborgerligaförattrevolutionenskallsegraärettvanvettredanmassanavdemtillåterdeticketyutomdemillionerborgerligasomenligtvåranutidafouquiertinvillerspåståendemåsteförsvinnafinnasytterligaredemillioneravhalvborgerligaarbetaresomskullegörademsällskapdessaönskajuisjälvaverketingenlinghögreänattisinturförvandlaslillborgerligaochdeskulleförsökablidetombourgeoisiensexistensicketillintetgjordesisittursprungutanendasttillsinaföljdervadbeträffardetorganiseradeochlagligaskräckväldetsåtjänardetiverklighetenendasttillallsmidabojorålfolketdetdödardelindividuellainitiativetsomärrevolutionenssjäldethamrarfastbegreppetomenstarkochmäktigregeringdetberederdiktalurenfördensomläggerhandenpårevolutionsdomstolenochförståratlmedslugbelochförsiktighetledadenisiltpartisintressen
+
+TEACHER 3:
+nuskajagsägadigvadviskagöraviskakastatärningomdetstorartatsadedenandremannenochvändesigidetsammatillindianensomstodochrepareradesnöskorietthörnavstuganhörpåbillebedamvillduspringanertillolesonsstugaochsägahonomattvigärnaskulleviljalånahanstärningsbägaredennabegäranframsagdmittunderenrådplägningomavlöningarträochproviantöverraskadebillebedamdessutomvardettidigtpådagenochhanhadealdrigsettattvitamänavpentfieldsochhutchinsonstypspeladetärningellernågotannatslagavspelförrändagensarbetevarslutmenhansansiktevarsåuttryckslöstsomenyukonindiansansiktebörvaradåhandrogpåsigsinavantarochgickutgenomdörren
+
+TEACHER 4:
+dettaärenuppenbarelsefrånjesuskristusensomgudgavhonomförattvisasinatjänarevadsomsnartskallskeochmedelstettbudskapgenomsinängelgavhandettillkännaförsintjänarejohannessomhärvittnarochframbärgudsordochjesukristivittnesbördalltvadhansjälvharsettsaligärdensomfåruppläsadennaprofetiasordochsaligaärodesomfåhörademochsomtagavarapåvaddäriärskrivettytidenärnärajohanneshälsardesjuförsamlingarnaiprovinsenasiennådvaremedederochfridfrånhonomsomärochsomvarochsomskallkommasåockfråndesjuandarsomståinförhanstronochfrånjesuskristusdettrovärdigavittnetdenförstföddeblanddedödadensomärhärskarenöverkonungarnapåjordenhonomsomälskarossochsomharlöstossfrånvårasyndermedsittblodochgjortosstillettkonungadömetillprästeråtsingudochfaderhonomtillhöräranochväldetievigheternasevigheteramen
+
+TEACHER 5:
+mazurkafrånjämtlandutgångsställningparvisiöppenringringensrörelseriktningmotsolsfattningarslutenfattningnrvalsfattningstegkavaljerpåförstataktdelenflyttarkavaljerenvänsterfotettstegirörelseriktningenpåandrataktdelenflyttashögerfotintillpåtredjetaktdelenlyftermanvänsterfotutåtsamtidigtsommangörensviktningmedhögerfotmanskallejsträckapåvristenpådenfotmanlyfterkavaljersochdamsfötterskallvarariktademotvarandraunderdenästatretaktdelarnatarmanmedvänsterfotettstegåtsidansätterhögerfotintillsamttarytterligareettstegmedvänsterfotunderdessatrestegskallmanvridasigvarvmotsolssåattkavaljerenstårmedhögersidautåtochmedvänstersidamotringensmittdetblirmotsattförhållandefördamunderdetreföljandetaktdelarnagårmanraktutåtfrånmittenmedförkavaljerenhögerfotettsidstegvänsterfotintillsamtpåtredjetaktdelenensviktningpåvänsterfotsamtidigtsommanlyfterupphögerfotmedtrestegtretaktdelarvridermansigvarvruntmotsolsmedgångstegvridstegmedbörjanpåhögerfotpådeföljandetretaktdelarnatarmansomibörjanettstegåtsidanmedvänsterfotettstegintillmedhögerfotförattpåtredjetaktdelenlyftauppvänsterfotsamtgöraensviktningmedhögerfotpåföljandesextaktdelarnavridermansigmedsexgångstegettvarvruntmotsolsdamfördamensammaslagsstegfasthonalltiddansarmedmotsattfotmotkavaljerenhonbörjardansenmedhögerfotettstegårsidanobsallasomdansarmåstelyftauppfötternapåsammagångdetärmycketviktigtdansenomfattarsjutaktervarefterdenbörjarpånyttpååttondetakten
+
+c)
+
+1. We think that the difficulty of the swedish and the english version is about the same. The small difference in alphabet size does not change the difficulty of the frequency analysis nor the Friedman test significantly. If we a thought experiment of this on say 20 000 characters from the chinese alphabet then even if we the right keylength the frequency analysis will not give anything useful for such a small text.
+
+2. A longer key is more secure. Assume that the attacker knows the keylength l. The difficulty of breaking the ciphertext c is then the difficulty of frequency analysis on a string of size |c|/l. If |c| is equal to l we have a one time pad. On the other end of the spectrum when l is equal to 1 we have the ceasear cipher. The difficulty of getting something useful out of the frequency analysis is highly dependent of knowing the structure of the plaintext.
+
+3. If the language is unknown we would try the most common languages and rank the results in some semi-intelligent way, for example, sort by common word occurence and least square error of the letter frequency distribution of the guessed language in question.
+
+4.1 This is not a crypto system/a very silly crypto system since the cipher text cannot be decrypted without knowing the plaintext, thus defeating the purpose. 
+
+A brute force attack would try to split each character into a binary sum giving us an upper bound of (alpabetsize)^(cipherlength/2). The brute force attack does only need to consider the first half of the ciphertext since the second half is the first half reversed.
+
+If the cipher text has an odd length we can determine the center character by splitting it in two identical terms. For the rest it may be possible to exploit the fact that the frequency of character c in a cipher text t can be expressed as:
+
+p_c = 1/|t| * (sum(p_a*p_b) for all a,b such that a+b=c)
+
+4.2 This is a crypto system which is as safe as the Vigenére cipher. The crypto system is the same as Vigenére with the modification of multiplying the plaintext character with -1 before performing the shift. The cost of a brute force attack is the same as for the Vigenére cipher since each key is possible.
+
+A cryptanalysis approach for cracking this cipher would be to identical to the Vigénere cipher since they are isomorphic.
+
+4.3 This crypto system seems harder to break than the Vigenére cipher since the encryption of a character depends on the previous character in the plaintext, making it nonlinear.
+
+The keyspace is equal to the keyspace for the Vigenére cipher, alphabetsize^keylength.
+
+The Kasiski-test can still be used to determine keylength but is less likely to work since it requires a one character longer repetition. 
+Example:
+
+        Vigenénere               modified version
+key:    ijkl ... ijklm           ijkl ... ijkl
+plain:  xabc ... yabc            xabc ... yabc
+crypt:  cjln ... djln            **mo ... **mo
+
+We did not come up with any clever way to partially determine the key given the keylength.
+
+4.4 This system feels more secure than Vigenére since frequency analysis must be done using the same formula as in 4.1 and we were not able to use cryptanalysis to deduce any useful information from the cipher text.
+
+The head of the encrypted text, which is shifted using the key, is in effect a one time pad. This will thus not give us any useful information. The rest of the encrypted text, assuming we know the key length, will result in a linear equation system consisting of n - l rows where n is the size of the encrypted text and l is the key length. Solving this will be as hard as brute forcing the key. Brute forcing this crypto system is identical to the ones above since the keyspace is as big.
+
+We did not come up with any clever way of breaking this in a clever way, besides using the same frequency analysis method as in 4.1 given the keylength. We think that this distribution will be too uniform to be of any use, however.
+
+4.5  This is less safe than the Vigenére.
+
+Brute forcing is as in the others exhausting the keyspace, alphabetsize^keylength.
+
+Given the keylength l we can deduce the plaintext past the lth character since c_i = c_(i-l) + p_i => p_i = c_i - c_(i-l). The first l characters in the ciphertext is effectively encrypted by a one time pad and is best guessed by the latter part of the plaintext. Since the keylength is sufficient to decrypt the latter part of the ciphertext just try all keylengths and use a semi-intelligent way to determine if the decrypted text is a plaintext.
+
+
+
+Group evaluation
+
+It was good enough. We did the major part of the work side by side. Would buy again.
+
+Lab evaluation
+
+Part a) was easy but not boring.
+
+We thought the b) part was interesting and amusing to do. It was good fun to break other peoples ciphers. The implementation was quite straightforward. Due to a mixup of crypt() and decrypt() we had a few rough days, other than that it was easy.
+
+
+Part c) was not straightforward and requires som thought(oh the humanity!). It was a bit disappointing that we did not take enough time to find holes in every crypto system. This part was a good exercise in applying the knowledge aquired in the lectures.
